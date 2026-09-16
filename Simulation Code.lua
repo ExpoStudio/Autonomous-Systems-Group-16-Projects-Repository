@@ -1,5 +1,5 @@
 function sysCall_init() 
-    
+    -- Testing
     mobileRob=sim.getObject('.') -- the handle of the mobilerob "Pioneer_p3dx"
     motorLeft=sim.getObjectHandle("Pioneer_p3dx_leftMotor") -- Handle of the left motor
     motorRight=sim.getObjectHandle("Pioneer_p3dx_rightMotor") -- Handle of the right motor
