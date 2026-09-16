@@ -75,6 +75,12 @@ function sysCall_actuation()
             --- Add your code here
 
 
+            -- Im thinkning since the proxDistance array has an array of all the proximity sensors there, we can compare the weights of the left and right sensors. If its too close to an object, it will stop travelling the path
+            -- and this block will execute. That will determine which direction is most effecient to turn
+            -- If the obstacle is closer to the sensors on the left side, for example, then the robot will turn right to avoid it. 
+            -- Else it will turn left. If by edge case they are the same, choose a random direction? - Tim
+
+
         else
             -- Obstacle in front. Use Braitenberg to avoid it
             --- Add your code here
