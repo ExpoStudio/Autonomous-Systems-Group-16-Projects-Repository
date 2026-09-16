@@ -3,7 +3,7 @@ function sysCall_init()
     mobileRob=sim.getObject('.') -- the handle of the mobilerob "Pioneer_p3dx"
     motorLeft=sim.getObjectHandle("Pioneer_p3dx_leftMotor") -- Handle of the left motor
     motorRight=sim.getObjectHandle("Pioneer_p3dx_rightMotor") -- Handle of the right motor
-    
+    -- Testing and things of that nature
     leftSensor=sim.getObjectHandle("LeftSensor") -- Handle of the left IR sensor
     middleSensor=sim.getObjectHandle("MiddleSensor") -- Handle of the middle IR sensor
     rightSensor=sim.getObjectHandle("RightSensor") -- Handle of the right IR sensor
