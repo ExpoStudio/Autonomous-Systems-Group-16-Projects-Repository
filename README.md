@@ -7,6 +7,7 @@ To test with the simulator, just copy and then paste the code into the script se
 
 
 READ THIS***
+
 If you are unfamiliar with GitHub, there are things called Branches. They are used to keep track of multiple versions of a document, so we are not all editing over each other. I have created one where all 4 of us can collaborate on and edit at the same time. To edit a document, simply select the branch called "Team-Collaborative-Branch," then head to the Project-I folder. Double click on the .lua file and select the pencil in the top right to edit the document. To save changes, click on "Commit changes..."
 
-DO NOT directly make changes to the main thread. The main thread is our final/updated version of the script. If wanting to make independent changes or experiment, create your own branch and request to merge the changes to another branch.
+DO NOT directly make changes to the main thread. The main thread is our final/updated version of the script. If wanting to make independent changes or experiment, create your own branch and request to merge the changes to another one.
