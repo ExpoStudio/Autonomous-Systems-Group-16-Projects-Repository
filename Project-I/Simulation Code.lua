@@ -26,14 +26,15 @@ function sysCall_init()
 
     -- Braitenberg weights from the left wheel's perspective
 
-    -- for each entry in the array, it represents the weight of the corresponding proximity sensor. The sign indicates the effect it has on the wheel speed. If the weight is positive, it will influence the wheel to speed up, if its negative it will influence the wheel to slow down. The more the weight, the more influence it has on the wheel's speed.
+    -- Note that arrays in Lua start at 1, not 0. So the first entry in the array corresponds to sensor 1, the second entry corresponds to sensor 2, and so on. The last entry in the array corresponds to sensor 8.
+    -- For each entry in the array, it represents the weight of the corresponding proximity sensor. The sign indicates the effect it has on the wheel speed. If the weight is positive, it will influence the wheel to speed up, if its negative it will influence the wheel to slow down. The more the weight, the more influence it has on the wheel's speed.
     braitenbergLeftWheelFrontSensorWeights={1,2,-2,-1} -- Braitenberg weights for the 4 front prox sensors (avoidance). These are proximity sensors 3,4,5,6 in the usensors array.
-    -- Braitenberg weights for the 2 side prox sensors (sensors 1 and 6 in the usensors array). These are used for following an object on the side.
+    -- Braitenberg weights for the 2 side prox sensors (sensors 2 and 7 in the usensors array). These are used for following an object on the side.
     braitenbergLeftWheelSideSensorWeights={-1,0} -- Braitenberg weights for the 2 side prox sensors (following)
-    -- The outer sensors in the array (sensors 0 and 7) are not necessary to include because objects detected on the side should not affect the speed of the robot (it already passed the object and/or is in the clear path).
+    -- The outer sensors in the array (sensors 1 and 8) are not necessary to include because objects detected on the side should not affect the speed of the robot (it already passed the object and/or is in the clear path).
     -- unused   -1      1       2      -2      -1       0     unused
     --   |      |       |       |       |       |       |        |
-    --   0      1       2       3       4       5       6        7
+    --   1      2       3       4       5       6       7        8
     -- MODEL FOR VISUALIZATION PURPOSES
 
     -- Braitenberg weights from the right wheel's perspective
@@ -42,7 +43,7 @@ function sysCall_init()
 
     -- unused   0      -1       -2      2       1       1     unused
     --   |      |       |       |       |       |       |        |
-    --   0      1       2       3       4       5       6        7
+    --   1      2       3       4       5       6       7        8
     -- MODEL FOR VISUALIZATION PURPOSES
 
 end
@@ -121,7 +122,6 @@ function sysCall_actuation()
                 if (leftSum < rightSum) then
                     turningDirection = -1 -- turn left
                 else
-                    vRight=vRight*0.05
                     turningDirection = 1 -- turn right
                 end
             end
