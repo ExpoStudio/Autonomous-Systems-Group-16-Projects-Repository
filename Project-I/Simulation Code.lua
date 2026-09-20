@@ -86,10 +86,11 @@ function sysCall_actuation()
             speedFactor = speedFactor - 0.1
         end
     end
+    -- Speed factor is probably unnecessary
+
     -- Line tracking according to IR sensor readings
     vLeft=setSpeed*speedFactor -- Default to move forward
     vRight=setSpeed*speedFactor
-    local turningDirection = 0 -- 0: no turn, -1: turn left, 1: turn right
 
     -- Velocity control according to opMode
     if ((sensorReading[1]==0 or sensorReading[2]==0 or sensorReading[3]==0) and (proxDist[2]+proxDist[3]+proxDist[4]+proxDist[5])==(noDetectionDist*4)) then -- line tracking mode
