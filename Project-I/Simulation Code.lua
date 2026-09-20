@@ -47,6 +47,10 @@ function sysCall_init()
     --   1      2       3       4       5       6       7        8
     -- MODEL FOR VISUALIZATION PURPOSES
 
+    -- I believe we then apply this by summing all of the sensors that detected something, and multiplying that by their respective braitenburg weight for each sensor. Then add that total to each repsective wheel's velocity
+    -- so imagine int totalLeftWheelFrontInfluence = 0; then for i=0; i<4; i++ do leftWheelFrontInfluence += proxDist[i]*braitenbergLeftWheelFrontSensorWeights[i];
+    -- then set vLeft = setSpeed - totalLeftWheelFrontInfluence
+    -- Im hoping y'all can implement this and test it in the sim
 end
 
 
