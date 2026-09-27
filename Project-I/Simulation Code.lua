@@ -20,6 +20,8 @@ function sysCall_init()
     -- Distance where no detection is assumed. If the distance is greater than this value, it is considered that there is no obstacle in front of the robot.
     noDetectionDist=0.5 -- You have to change this value [0 1]...
     -- Experimental Distance changed to .5
+    directionEstablished = false
+    establishedTracingDirection = "left"
 
     -- Array to store the distance from each sensor to the detected object. If no object is detected, the value is set to "noDetectionDist".
     proxDist={noDetectionDist,noDetectionDist,noDetectionDist,noDetectionDist,noDetectionDist,noDetectionDist,noDetectionDist,noDetectionDist}
@@ -79,8 +81,7 @@ function sysCall_actuation()
     -- Line tracking according to IR sensor readings
     vLeft=setSpeed
     vRight=setSpeed
-
-    local lastTrackedDirection = "left"
+    local tracingDirection = directionEstablished and establishedTracingDirection or nil
 
     -- Velocity control according to opMode
     if ((sensorReading[1]==0 or sensorReading[2]==0 or sensorReading[3]==0) and (proxDist[3]+proxDist[4]+proxDist[5]+proxDist[6])==(noDetectionDist*4)) then -- line tracking mode
@@ -90,7 +91,7 @@ function sysCall_actuation()
         if (sensorReading[1]~=0) then -- left sensor is out of the line;Turn right
             vRight=vRight*0.05
         end
-        
+        directionEstablished = false
     else 
         if (proxDist[3]+proxDist[4]+proxDist[5]+proxDist[6]==noDetectionDist*4) then
             -- Obstacle Avoidance Mode - Trace around obstacle
@@ -116,23 +117,19 @@ function sysCall_actuation()
             print("Left sensor condition: " .. tostring(didLeftSensorMeetCondition))
 
             if (didRightSensorMeetCondition and not didLeftSensorMeetCondition) then
-                vRight = setSpeed
-                vLeft = vLeft * .5
                 print("Turning left")
-                lastTrackedDirection = "left"
+                tracingDirection = "left"
             elseif (didLeftSensorMeetCondition and not didRightSensorMeetCondition) then
-                vLeft = setSpeed
-                vRight = vRight * .5
                 print("Turning right")
-                lastTrackedDirection = "right"
+                tracingDirection = "right"
             end
 
-            if (lastTrackedDirection == "left") then
+            if (tracingDirection == "left") then
                 print("Continuing to turn left")
                 vRight = setSpeed
                 vLeft = vLeft * .5
                 print("Turning left")
-            elseif (lastTrackedDirection == "right") then
+            elseif (tracingDirection == "right") then
                 print("Continuing to turn right")
                 vLeft = setSpeed
                 vRight = vRight * .5
@@ -158,6 +155,17 @@ function sysCall_actuation()
 
             vLeft = vLeft + leftSum
             vRight = vRight + rightSum
+
+            if (directionEstablished == false) then
+                if (leftSum > rightSum) then
+                    establishedTracingDirection = "left"
+                    directionEstablished = true
+                elseif (rightSum > leftSum) then
+                    establishedTracingDirection = "right"
+                    directionEstablished = true
+                end
+                directionEstablished = true
+            end
         end
     end
 
