@@ -45,15 +45,12 @@ function sysCall_init()
     --   |      |       |       |       |       |       |        |
     --   1      2       3       4       5       6       7        8
     -- MODEL FOR VISUALIZATION PURPOSES
-
 end
-
 
 function sysCall_sensing()
     local p=sim.getObjectPosition(mobileRob,-1)
     sim.addDrawingObjectItem(robotTrace,p)
 end 
-
 
 function sysCall_actuation()
 
@@ -78,19 +75,10 @@ function sysCall_actuation()
             proxDist[i]=dist
         end
     end
-    
-
-    --if the sensors detect somethin infront, slow the robot down. The more the sensors detect, the slower the robot moves.
-    --local speedFactor=1
-    --for i=3,6,1 do
-    --    if proxDist[i] < noDetectionDist then
-    --        speedFactor = speedFactor - 0.25
-    --    end
-    --end
 
     -- Line tracking according to IR sensor readings
-    vLeft=setSpeed--*speedFactor -- Default to move forward
-    vRight=setSpeed--*speedFactor
+    vLeft=setSpeed
+    vRight=setSpeed
 
     local lastTrackedDirection = "left"
 
@@ -103,23 +91,20 @@ function sysCall_actuation()
             vRight=vRight*0.05
         end
         
-    else -- obstacle avoidance mode ONLY IF there is nothing in front of the front sensors AND something is detected by the side sensors in a close enough range
+    else 
         if (proxDist[3]+proxDist[4]+proxDist[5]+proxDist[6]==noDetectionDist*4) then
-            -- Nothing in front. Maybe we have an obstacle on the side, in which case we wanna keep a constant distance with it:
-            --- Add your code here
+            -- Obstacle Avoidance Mode - Trace around obstacle
             local leftSum = 0
             local rightSum = 0
 
-            -- if the proximities of the left sensors are greater than half the no detection distance, then we disable braigtenburg weights
+            -- if the proximities of the left sensors are greater than 20% more than half the no detection distance, we disable braigtenburg weights
             if (proxDist[7]+proxDist[8] >= noDetectionDist*1.2 or proxDist[2]+proxDist[1] >= noDetectionDist*1.2) then
-            leftSum = distanceFactor(noDetectionDist, proxDist[2])*braitenbergLeftWheelFrontSensorWeights[1] + distanceFactor(noDetectionDist, proxDist[7])*braitenbergLeftWheelFrontSensorWeights[2]
-            rightSum = distanceFactor(noDetectionDist, proxDist[2])*braitenbergRightWheelFrontSensorWeights[1] + distanceFactor(noDetectionDist, proxDist[7])*braitenbergRightWheelFrontSensorWeights[2]
-            
-            vLeft = vLeft + leftSum
-            vRight = vRight + rightSum
+                leftSum = distanceFactor(noDetectionDist, proxDist[2])*braitenbergLeftWheelFrontSensorWeights[1] + distanceFactor(noDetectionDist, proxDist[7])*braitenbergLeftWheelFrontSensorWeights[2]
+                rightSum = distanceFactor(noDetectionDist, proxDist[2])*braitenbergRightWheelFrontSensorWeights[1] + distanceFactor(noDetectionDist, proxDist[7])*braitenbergRightWheelFrontSensorWeights[2]
+                
+                vLeft = vLeft + leftSum
+                vRight = vRight + rightSum
             end
-
-
 
             -- say we turn right and then wrap around the obstacle. this implies that since we turned right, now we have to increase the left wheel velocity and decrease the right wheel.
             -- so we can maintain a certain distance around the object using the right sensor. If the right sensor leaves .5m way from the obstacle, but is also less than the nodetectionDistance, increase wheel left speed factor until its within that range. Then 
@@ -154,11 +139,7 @@ function sysCall_actuation()
                 print("Turning right")
             end
 
-            -- We use the side sensors to detect if there is an obstacle on the side. If there is, we want to keep a constant distance with it. We can use the Braitenberg weights for the side sensors to determine how much to turn based on the distance of the object. If the object is closer to the left sensors, we turn left to trail around the object.
         else    
-            -- Obstacle in front. Use Braitenberg to avoid it
-            --- Add your code here
-
             -- if the object is closer to the left sensors, turn right; if the object is closer to the right sensors, turn left
             -- beacuse each of the proximity sensors has a weight and value depending on the distance of the object, we can write an if statement that determines which direction it turns by comparing left front sensors 1-3 to the right front sensors 4-6. If the left sensors are greater than the right sensors, turn right, and vice versa.
             -- So we sum the braitenberg weights for the left wheel and the right wheel and compare them. If the left wheel is greater than the right wheel, we turn right, and vice versa.
@@ -186,7 +167,7 @@ function sysCall_actuation()
 
 end 
 
--- because the proximity to the object is a raw float, it means that if its closer to the object, it will be a smaller number. This inherently results in a smaller influence on the velocities when multiplying by the braigtenburg weights, resulting in a weaker turn effect as the object gets closer. This function returns the proper inverse of the distance.
+-- Because the proximity to the object is a raw float, it means that if its closer to the object, it will be a smaller number. This inherently results in a smaller influence on the velocities when multiplying by the braigtenburg weights, resulting in a weaker turn effect as the object gets closer. This function returns the proper inverse of the distance.
 function distanceFactor(noDetectionDist, proximalDistance)
     local strength = 0
         strength = 1 - (proximalDistance / noDetectionDist) 
